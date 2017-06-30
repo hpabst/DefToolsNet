@@ -91,10 +91,10 @@ namespace DefToolsNet.Models.Tests
             Assert.IsTrue(la.Player.Realm == "Shadowsong");
             Assert.IsTrue(la.Player.PlayerClass == WowClass.DeathKnight);
             Assert.IsTrue(la.AwardReason == "Greed/OS");
-            Assert.IsTrue(la.AwardDate.Equals(new DateTime(2017, 06, 01, 20, 57, 16)));
-            Assert.IsTrue(la.Item.Name == "Phial of Fel Blood");
+            Assert.IsTrue(la.AwardDate.Equals(new DateTime(2017, 06, 01)));
+            Assert.IsTrue(la.Item.Name == "Phial of Fel Blood", la.Item.Name);
             Assert.IsTrue(la.Item.ItemId == 140820);
-            Assert.IsTrue(la.Item.Instance == Zone.TheNighthold);
+            Assert.IsTrue(la.Item.Instance == Zone.Unknown);
             Assert.IsTrue(la.Item.BonusIds.Count == 3);
             HashSet<int> bids = new HashSet<int>();
             foreach (BonusId bid in la.Item.BonusIds)

@@ -9,19 +9,32 @@ namespace DefToolsNet.Models
 
     public enum WowClass
     {
-        Unknown,
-        Priest,
-        Mage,
-        Warlock,
-        Rogue,
-        DemonHunter,
-        Monk,
-        Druid,
-        Shaman,
-        Hunter,
-        Paladin,
-        Warrior,
-        DeathKnight
+        Unknown = 0,
+        UNKNOWN = 0,
+        Priest = 5,
+        PRIEST = 5,
+        Mage = 8,
+        MAGE = 8,
+        Warlock = 9,
+        WARLOCK = 9,
+        Rogue = 4,
+        ROGUE = 4,
+        DemonHunter = 12,
+        DEMONHUNTER = 12,
+        Monk = 10,
+        MONK = 10,
+        Druid = 11,
+        DRUID = 11,
+        Shaman = 7,
+        SHAMAN = 7,
+        Hunter = 3,
+        HUNTER = 3,
+        Paladin = 2,
+        PALADIN = 2,
+        Warrior = 1,
+        WARRIOR = 1,
+        DeathKnight = 6,
+        DEATHKNIGHT = 6
     }
 
     public enum Zone : int
