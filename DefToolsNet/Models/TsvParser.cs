@@ -20,6 +20,13 @@ namespace DefToolsNet.Models
 
         public override LootAward ParseLine(string text)
         {
+            string[] components = text.Split('\t');
+            string playerName = components[0].Split('-')[0];
+            string playerRealm = components[0].Split('-')[1];
+            string awardReason = components[6];
+            DateTime awardDate = Convert.ToDateTime(components[1]);
+            WowClass playerClass = (WowClass)Enum.Parse(typeof(WowClass), components[8]);
+            WowItem item = this.UnpackItemString("item:" + components[5]);
             throw new NotImplementedException();
         }
     }
