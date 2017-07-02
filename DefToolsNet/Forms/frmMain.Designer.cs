@@ -35,12 +35,12 @@
             this.cbRclcExportType = new System.Windows.Forms.ComboBox();
             this.lblRclcExportType = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtboxData = new System.Windows.Forms.TextBox();
             this.lblRclcExportedTxt = new System.Windows.Forms.Label();
             this.btnImportData = new System.Windows.Forms.Button();
+            this.pbImport = new System.Windows.Forms.ProgressBar();
             this.tabDBManage = new System.Windows.Forms.TabPage();
             this.tabPlayerManagement = new System.Windows.Forms.TabPage();
-            this.pbImport = new System.Windows.Forms.ProgressBar();
             this.tbCtrlMain.SuspendLayout();
             this.tabDataImport.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -124,7 +124,7 @@
             // panel2
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.panel2, 2);
-            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.txtboxData);
             this.panel2.Controls.Add(this.lblRclcExportedTxt);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(3, 56);
@@ -132,16 +132,18 @@
             this.panel2.Size = new System.Drawing.Size(792, 394);
             this.panel2.TabIndex = 1;
             // 
-            // textBox1
+            // txtboxData
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txtboxData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(4, 20);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(785, 371);
-            this.textBox1.TabIndex = 1;
+            this.txtboxData.Location = new System.Drawing.Point(4, 20);
+            this.txtboxData.Multiline = true;
+            this.txtboxData.Name = "txtboxData";
+            this.txtboxData.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtboxData.Size = new System.Drawing.Size(785, 371);
+            this.txtboxData.TabIndex = 1;
+            this.txtboxData.WordWrap = false;
             // 
             // lblRclcExportedTxt
             // 
@@ -161,13 +163,25 @@
             this.btnImportData.TabIndex = 2;
             this.btnImportData.Text = "Import Data";
             this.btnImportData.UseVisualStyleBackColor = true;
+            this.btnImportData.Click += new System.EventHandler(this.SubmitText);
+            // 
+            // pbImport
+            // 
+            this.pbImport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbImport.Enabled = false;
+            this.pbImport.Location = new System.Drawing.Point(3, 471);
+            this.pbImport.MarqueeAnimationSpeed = 10;
+            this.pbImport.Name = "pbImport";
+            this.pbImport.Size = new System.Drawing.Size(661, 23);
+            this.pbImport.TabIndex = 3;
             // 
             // tabDBManage
             // 
             this.tabDBManage.Location = new System.Drawing.Point(4, 22);
             this.tabDBManage.Name = "tabDBManage";
             this.tabDBManage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDBManage.Size = new System.Drawing.Size(801, 503);
+            this.tabDBManage.Size = new System.Drawing.Size(804, 503);
             this.tabDBManage.TabIndex = 1;
             this.tabDBManage.Text = "DB Management";
             this.tabDBManage.UseVisualStyleBackColor = true;
@@ -177,21 +191,12 @@
             this.tabPlayerManagement.Location = new System.Drawing.Point(4, 22);
             this.tabPlayerManagement.Name = "tabPlayerManagement";
             this.tabPlayerManagement.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlayerManagement.Size = new System.Drawing.Size(801, 503);
+            this.tabPlayerManagement.Size = new System.Drawing.Size(804, 503);
             this.tabPlayerManagement.TabIndex = 2;
             this.tabPlayerManagement.Text = "PlayerManagement";
             this.tabPlayerManagement.UseVisualStyleBackColor = true;
             // 
-            // pbImport
-            // 
-            this.pbImport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbImport.Location = new System.Drawing.Point(59, 470);
-            this.pbImport.Name = "pbImport";
-            this.pbImport.Size = new System.Drawing.Size(100, 23);
-            this.pbImport.TabIndex = 3;
-            // 
-            // frmMain
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -223,7 +228,7 @@
         private System.Windows.Forms.Label lblRclcExportType;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblRclcExportedTxt;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtboxData;
         private System.Windows.Forms.Button btnImportData;
         private System.Windows.Forms.ProgressBar pbImport;
     }
