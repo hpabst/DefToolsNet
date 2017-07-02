@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace DefToolsNet.Models
 {
@@ -16,7 +18,21 @@ namespace DefToolsNet.Models
 
         public override ICollection<LootAward> ParseImportText(string text)
         {
-            throw new NotImplementedException();
+            string[] lines = text.Split('\n');
+            HashSet<LootAward> awards = new HashSet<LootAward>();
+            //Long-ass regex to make sure that the string we're checking matches the format we're expecting
+            string formatRegex =
+                "([aA-zZ]+)-([aA-zZ]+)\t([0-9]+)/([0-9]+)/([0-9]+)\t([0-9-:]+)\t=HYPERLINK\\(\"https:\\/\\/www.wowhead.com\\/item=([0-9]+)(&bonus=([0-9-:]+))?\",\"([\' \\/\\\\0-9aA-zZ]+)\"\\)\t([0-9]+)\t([0-9-:]+)\t([ \\/\\\\0-9aA-zZ]+)\t[(0-9)]\t([aA-zZ]+)\t([ \\-aA-zZ]+)\t([aA-zZ]+)\t=HYPERLINK\\(\"https:\\/\\/www.wowhead.com\\/item=([0-9]+)(&bonus=([0-9-:]+))?\",\"([\' \\/\\\\0-9aA-zZ]+)\"\\)\t=HYPERLINK\\(\"https:\\/\\/www.wowhead.com\\/item=([0-9]+)(&bonus=([0-9-:]+))?\",\"([\' \\/\\\\0-9aA-zZ]+)\"\\)\t([0-9]+)\t([aA-zZ]+)";
+            foreach (string line in lines)
+            {
+                Match match = Regex.Match(line, formatRegex);
+                if (match.Success)
+                {
+                    awards.Add(this.ParseLine(line));
+                }
+            }
+
+            return awards;
         }
 
         public override LootAward ParseLine(string text)
