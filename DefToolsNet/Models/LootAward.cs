@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,14 @@ namespace DefToolsNet.Models
 {
     public class LootAward
     {
-        public string AwardReason;
-        public DateTime AwardDate;
-        public WowItem Item;
-        public WowItem Replacement1;
-        public WowItem Replacement2;
-        public WowPlayer Player;
+        [Key]
+        public int LootAwardId { get; set; }
+        public string AwardReason { get; set; }
+        public DateTime AwardDate { get; set; }
+        public WowItem Item { get; set; }
+        public WowItem Replacement1 { get; set; }
+        public WowItem Replacement2 { get; set; }
+        public WowPlayer Player { get; set; }
 
         public LootAward(string awardReason, DateTime awardDate, WowItem item, WowItem r1, WowItem r2, WowPlayer player)
         {

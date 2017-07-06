@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,10 +11,11 @@ namespace DefToolsNet.Models
 {
     public class WowPlayer
     {
-
-        public string Name;
-        public string Realm;
-        public WowClass PlayerClass;
+        [Key, Column(Order = 0)]
+        public string Name { get; set; }
+        [Key, Column(Order = 1)]
+        public string Realm { get; set; }
+        public WowClass PlayerClass { get; set; }
 
         private static string _defaultName = "UNKNOWN_PLAYER_NAME";
         private static string _defaultRealm = "UNKNOWN_REALM";

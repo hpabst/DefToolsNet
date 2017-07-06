@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DefToolsNet.Models;
 using System;
+using Effort;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,49 +13,49 @@ namespace DefToolsNet.Models.Tests
     public class DbControlTests
     {
         [TestMethod()]
-        public void CheckExistsInDbTest()
+        public void CheckExistsInDbBonusIdTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void CheckExistsInDbTest1()
+        public void CheckExistsInDbLootAwardTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void CheckExistsInDbTest2()
+        public void CheckExistsInDbWowItemTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void CheckExistsInDbTest3()
+        public void CheckExistsInDbWowPayerTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void FilterTest()
+        public void FilterBonusIdsTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void FilterTest1()
+        public void FilterLootAwardsTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void FilterTest2()
+        public void FilterWowItemsTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void FilterTest3()
+        public void FilterPlayersTest()
         {
             throw new NotImplementedException();
         }

@@ -14,8 +14,8 @@ namespace DefToolsNet.Models.Tests
         [TestMethod()]
         public void LootAwardTest()
         {
-            WowItem wi1 = new WowItem(1, "Item of the Monkey", Zone.Unknown);
-            WowItem wi2 = new WowItem(2, "Item of the Tiger", Zone.Unknown);
+            WowItem wi1 = new WowItem(1, "Item of the Monkey");
+            WowItem wi2 = new WowItem(2, "Item of the Tiger");
             WowItem wi3 = WowItem.GetNullItem();
             LootAward la1 = new LootAward("Reason", DateTime.MinValue, wi1, wi2, wi3, WowPlayer.GetDefaultPlayer());
 
@@ -30,8 +30,8 @@ namespace DefToolsNet.Models.Tests
         public void MatchesTest()
         {
 
-            WowItem wi1 = new WowItem(1, "Item of the Monkey", Zone.Unknown);
-            WowItem wi2 = new WowItem(2, "Item of the Tiger", Zone.Unknown);
+            WowItem wi1 = new WowItem(1, "Item of the Monkey");
+            WowItem wi2 = new WowItem(2, "Item of the Tiger");
             WowItem wi3 = WowItem.GetNullItem();
             WowPlayer wp1 = WowPlayer.GetDefaultPlayer();
             WowPlayer wp2 = new WowPlayer("Player", "Realm", WowClass.Druid);

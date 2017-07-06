@@ -27,37 +27,37 @@ namespace DefToolsNet.Models.Tests
 
             HashSet<BonusId> bids1 = new HashSet<BonusId>();
             bids1.Add(new BonusId(570));
-            WowItem helmProtector = new WowItem(143575, "Helm of the Foreseen Protector", Zone.Unknown, bids1);
+            WowItem helmProtector = new WowItem(143575, "Helm of the Foreseen Protector", bids1);
 
             HashSet<BonusId> bids2 = new HashSet<BonusId>();
             bids2.Add(new BonusId(3516));
             bids2.Add(new BonusId(1487));
             bids2.Add(new BonusId(3528));
-            WowItem helmShackledElements = new WowItem(138343, "Helm of Shackled Elements", Zone.Unknown, bids2);
+            WowItem helmShackledElements = new WowItem(138343, "Helm of Shackled Elements", bids2);
 
             HashSet<BonusId> bids3 = new HashSet<BonusId>();
             bids3.Add(new BonusId(570));
-            WowItem leggingsConqueror = new WowItem(143564, "Leggings of the Foreseen Conqueror", Zone.Unknown, bids3);
+            WowItem leggingsConqueror = new WowItem(143564, "Leggings of the Foreseen Conqueror", bids3);
 
             HashSet<BonusId> bids4 = new HashSet<BonusId>();
             bids4.Add(new BonusId(3573));
             bids4.Add(new BonusId(43));
             bids4.Add(new BonusId(1552));
             bids4.Add(new BonusId(3337));
-            WowItem legplatesSwarm = new WowItem(134506, "Legplates of the Swarm", Zone.Unknown, bids4);
+            WowItem legplatesSwarm = new WowItem(134506, "Legplates of the Swarm", bids4);
 
             HashSet<BonusId> bids5 = new HashSet<BonusId>();
             bids5.Add(new BonusId(3517));
             bids5.Add(new BonusId(41));
             bids5.Add(new BonusId(1492));
             bids5.Add(new BonusId(3528));
-            WowItem netherbrandedShoulderpads = new WowItem(140917, "Netherbranded Shoulderpads", Zone.Unknown, bids5);
+            WowItem netherbrandedShoulderpads = new WowItem(140917, "Netherbranded Shoulderpads", bids5);
 
             HashSet<BonusId> bids6 = new HashSet<BonusId>();
             bids6.Add(new BonusId(3418));
             bids6.Add(new BonusId(1557));
             bids6.Add(new BonusId(3337));
-            WowItem epauletsDIntent = new WowItem(134480, "Epaulets of Deceitful Intent", Zone.Unknown, bids6);
+            WowItem epauletsDIntent = new WowItem(134480, "Epaulets of Deceitful Intent", bids6);
             LootAward award1 = new LootAward("Slight Upgrade", new DateTime(2017, 06, 01), helmProtector,
                 helmShackledElements, WowItem.GetNullItem(), playerMarath);
             LootAward award2 = new LootAward("Gives me 2/4 set", new DateTime(2017, 06, 01), leggingsConqueror, legplatesSwarm, WowItem.GetNullItem(), playerBerrimond);
@@ -95,7 +95,6 @@ namespace DefToolsNet.Models.Tests
             Assert.IsTrue(la.AwardDate.Equals(new DateTime(2017, 06, 01)));
             Assert.IsTrue(la.Item.Name == "Phial of Fel Blood", la.Item.Name);
             Assert.IsTrue(la.Item.ItemId == 140820);
-            Assert.IsTrue(la.Item.Instance == Zone.Unknown);
             Assert.IsTrue(la.Item.BonusIds.Count == 3);
             HashSet<int> bids = new HashSet<int>();
             foreach (BonusId bid in la.Item.BonusIds)

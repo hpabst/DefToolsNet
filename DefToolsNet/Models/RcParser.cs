@@ -34,7 +34,7 @@ namespace DefToolsNet.Models
                 int bId = int.Parse(components[i]);
                 bonuses.Add(new BonusId(bId));
             }
-            return new WowItem(id, "UNKNOWN", Zone.Unknown, bonuses);
+            return new WowItem(id, "UNKNOWN", bonuses);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace DefToolsNet.Models
             {
                 bids.Add(new BonusId(i));
             }
-            return new WowItem(id, name, Zone.Unknown, bids);
+            return new WowItem(id, name, bids);
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,29 +10,27 @@ namespace DefToolsNet.Models
 {
     public class WowItem
     {
-        public int ItemId;
-        public string Name;
-        public Zone Instance;
-        public ICollection<BonusId> BonusIds;
+        [Key]
+        public int WowItemId { get; set; }
+        public int ItemId { get; set; }
+        public string Name { get; set; }
+        public ICollection<BonusId> BonusIds { get; set; }
 
         private static WowItem _nullItem;
         private static int _nullId = int.MinValue;
         private static string _nullName = "NULL";
-        private static Zone _nullZone = Zone.Unknown;
 
-        public WowItem(int itemId, string name, Zone instance, ICollection<BonusId> bonusIds)
+        public WowItem(int itemId, string name, ICollection<BonusId> bonusIds)
         {
             this.ItemId = itemId;
             this.Name = name;
-            this.Instance = instance;
             this.BonusIds = bonusIds;
         }
 
-        public WowItem(int itemId, string name, Zone instance)
+        public WowItem(int itemId, string name)
         {
             this.ItemId = itemId;
             this.Name = name;
-            this.Instance = instance;
             this.BonusIds = new List<BonusId>();
         }
 
@@ -48,7 +47,6 @@ namespace DefToolsNet.Models
             }
             if (i.ItemId != this.ItemId) return false;
             if (String.Compare(this.Name, i.Name) != 0) return false;
-            if (i.Instance != this.Instance) return false;
             HashSet<int> itemIds = new HashSet<int>();
             foreach (BonusId id in i.BonusIds)
             {
@@ -67,7 +65,7 @@ namespace DefToolsNet.Models
         {
             if(WowItem._nullItem == null)
             {
-                WowItem._nullItem = new WowItem(_nullId, _nullName, _nullZone);
+                WowItem._nullItem = new WowItem(_nullId, _nullName);
             }
 
             return WowItem._nullItem;

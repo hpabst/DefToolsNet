@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,12 @@ namespace DefToolsNet.Models
 {
     public class BonusId
     {
-        public int Id;
-        public string Effect;
+        [Key]
+        public int BonusIdId { get; set; }
+        public int Id { get; set; }
+        public string Effect { get; set; }
+
+        public ICollection<WowItem> WowItems { get; set; }//Required for EF many-to-many relationship.
 
         public BonusId(int id, string effect)
         {

@@ -22,7 +22,6 @@ namespace DefToolsNet.Models.Tests
             WowItem item = rp.UnpackItemString(testStr1);
             Assert.IsTrue(item.ItemId == 143575);
             Assert.IsTrue(item.Name == "UNKNOWN");
-            Assert.IsTrue(item.Instance == Zone.Unknown);
             Assert.IsTrue(item.BonusIds.Count == 1);
             HashSet<int> ids = new HashSet<int>();
             foreach (BonusId bid in item.BonusIds)
@@ -34,7 +33,6 @@ namespace DefToolsNet.Models.Tests
             item = rp.UnpackItemString(testStr2);
             Assert.IsTrue(item.ItemId == 140816);
             Assert.IsTrue(item.Name == "UNKNOWN");
-            Assert.IsTrue(item.Instance == Zone.Unknown);
             Assert.IsTrue(item.BonusIds.Count == 3);
             ids = new HashSet<int>();
             foreach (BonusId bid in item.BonusIds)
@@ -59,14 +57,12 @@ namespace DefToolsNet.Models.Tests
             RcParser rp = new TsvParser();
             WowItem result = rp.UnpackWowheadLink(teststr1);
             Assert.IsTrue(result.Name == "Helm of the Foreseen Protector", result.Name);
-            Assert.IsTrue(result.Instance == Zone.Unknown);
             Assert.IsTrue(result.ItemId == 143575);
             Assert.IsTrue(result.BonusIds.Count == 1);
             Assert.IsTrue(result.BonusIds.First().Matches(new BonusId(570)));
 
             result = rp.UnpackWowheadLink(teststr2);
             Assert.IsTrue(result.Name == "Netherbranded Shoulderpads");
-            Assert.IsTrue(result.Instance == Zone.Unknown);
             Assert.IsTrue(result.ItemId == 140917);
             Assert.IsTrue(result.BonusIds.Count == 4);
             HashSet<BonusId> bids = new HashSet<BonusId>();
@@ -102,7 +98,6 @@ namespace DefToolsNet.Models.Tests
 
             result = rp.UnpackWowheadLink(teststr5);
             Assert.IsTrue(result.Name == "Netherbranded Shoulderpads");
-            Assert.IsTrue(result.Instance == Zone.Unknown);
             Assert.IsTrue(result.ItemId == 140917);
             Assert.IsTrue(result.BonusIds.Count == 0);
         }

@@ -14,9 +14,8 @@ namespace DefToolsNet.Models.Tests
         [TestMethod()]
         public void WowItemTest()
         {
-            WowItem wi1 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TombOfSargeras);
+            WowItem wi1 = new WowItem(1, "Silent Jerkin of the Monkey");
             Assert.IsTrue(wi1.ItemId == 1);
-            Assert.IsTrue(wi1.Instance == Zone.TombOfSargeras);
             Assert.IsTrue(string.Compare(wi1.Name, "Silent Jerkin of the Monkey") == 0);
             Assert.IsTrue(wi1.BonusIds.Count == 0);
 
@@ -24,9 +23,8 @@ namespace DefToolsNet.Models.Tests
             bis.Add(new BonusId(1));
             bis.Add(new BonusId(3));
             bis.Add(new BonusId(int.MaxValue));
-            WowItem wi2 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TheNighthold, bis);
+            WowItem wi2 = new WowItem(1, "Silent Jerkin of the Monkey", bis);
             Assert.IsTrue(wi2.ItemId == 1);
-            Assert.IsTrue(wi2.Instance == Zone.TheNighthold);
             Assert.IsTrue(string.Compare(wi2.Name, "Silent Jerkin of the Monkey") == 0);
             Assert.IsTrue(wi2.BonusIds.Count == 3);
         }
@@ -35,7 +33,7 @@ namespace DefToolsNet.Models.Tests
         [TestMethod()]
         public void MatchesTest()
         {
-            WowItem wi1 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TombOfSargeras);
+            WowItem wi1 = new WowItem(1, "Silent Jerkin of the Monkey");
             List<BonusId> bis = new List<BonusId>();
             bis.Add(new BonusId(1));
             bis.Add(new BonusId(3));
@@ -51,15 +49,15 @@ namespace DefToolsNet.Models.Tests
             bis3.Add(new BonusId(1));
             bis3.Add(new BonusId(2));
             bis3.Add(new BonusId(int.MaxValue));
-            WowItem wi2 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TheNighthold, bis);
-            WowItem wi3 = new WowItem(2, "Noisy Jerkin of the Monkey", Zone.TheNighthold, bis);
+            WowItem wi2 = new WowItem(1, "Silent Jerkin of the Monkey", bis);
+            WowItem wi3 = new WowItem(2, "Noisy Jerkin of the Monkey", bis);
             string testStr = "test";
 
-            WowItem wi4 = new WowItem(1, "Quiet Jerkin of the Monkey", Zone.TombOfSargeras);
+            WowItem wi4 = new WowItem(1, "Quiet Jerkin of the Monkey");
 
-            WowItem wi5 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TheNighthold, bis2);
+            WowItem wi5 = new WowItem(1, "Silent Jerkin of the Monkey");
 
-            WowItem wi6 = new WowItem(1, "Silent Jerkin of the Monkey", Zone.TheNighthold, bis3);
+            WowItem wi6 = new WowItem(1, "Silent Jerkin of the Monkey", bis3);
 
             Assert.IsTrue(wi1.Matches(wi1));
             Assert.IsFalse(wi1.Matches(null));
