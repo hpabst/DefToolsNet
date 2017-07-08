@@ -98,14 +98,22 @@ namespace DefToolsNet.Models
             bool result = false;
             using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
-                var query = from i in ctx.WowItems
-                    where i.ItemId == item.ItemId
-                    select i;
-                bool exists = query.Any();
-                if (exists)
+                var query = ctx.WowItems.Where(i => i.ItemId == item.ItemId).Select(i => new
                 {
-                    WowItem existing = query.First();
-                    result = existing.Matches(item);
+                    WowItem = i,
+                    BonusIds = i.BonusIds
+                }).ToList();
+                foreach (var queried in query)
+                {
+                    queried.WowItem.BonusIds = queried.BonusIds;
+                }
+                if (query.Any())
+                {
+                    foreach (var q in query)
+                    {
+                        if (q.WowItem.Matches(item))
+                            result = true;
+                    }
                 }
             }
             return result;
@@ -248,7 +256,35 @@ namespace DefToolsNet.Models
 
         public bool AddItem(WowItem item)
         {
-            throw new NotImplementedException();
+            if (!CheckExistsInDb(item))
+            {
+                using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+                {
+                    HashSet<BonusId> fetchedBids = new HashSet<BonusId>();
+                    foreach (BonusId id in item.BonusIds)
+                    {
+                        var query = from b in ctx.BonusIds
+                            where b.Id == id.Id
+                            select b;
+                        if (!query.Any())
+                        {
+                            AddBonusId(id);
+                            fetchedBids.Add((from b in ctx.BonusIds
+                                where b.Id == id.Id
+                                select b).Single());
+                        }
+                        else
+                        {
+                            fetchedBids.Add(query.Single());
+                        }
+                    }
+                    item.BonusIds = fetchedBids;
+                    ctx.WowItems.Add(item);
+                    ctx.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
         }
 
         public bool AddLootAward(LootAward award)

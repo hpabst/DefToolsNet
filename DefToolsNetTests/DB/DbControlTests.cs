@@ -21,6 +21,11 @@ namespace DefToolsNet.Models.Tests
         {
             ctrl = new DbControl(DbControl.DBNAME_TEST);
             ctx = new DefToolsContext(DbControl.DBNAME_TEST);
+            ctx.LootAwards.RemoveRange(ctx.LootAwards);
+            ctx.WowItems.RemoveRange(ctx.WowItems);
+            ctx.WowPlayers.RemoveRange(ctx.WowPlayers);
+            ctx.BonusIds.RemoveRange(ctx.BonusIds);
+            ctx.SaveChanges();
         }
 
         [TestCleanup]
@@ -204,7 +209,7 @@ namespace DefToolsNet.Models.Tests
 
             foreach (WowItem item in itemsBidAbsent)
             {
-                Assert.IsFalse(ctrl.AddItem(item));
+                Assert.IsFalse(ctrl.AddItem(item), $"Failed on item Id {item.ItemId} name {item.Name}");
             }
 
             foreach (WowItem item in itemsBidPresent)

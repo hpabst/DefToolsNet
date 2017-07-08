@@ -36,7 +36,7 @@ namespace DefToolsNet.Models
 
         private WowItem()
         {
-            
+            this.BonusIds = new List<BonusId>();
         }
 
         public bool Matches(object obj)

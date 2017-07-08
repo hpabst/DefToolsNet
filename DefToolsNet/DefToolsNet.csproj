@@ -65,6 +65,7 @@
     <Compile Include="Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BonusId.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="DB\DBControl.cs" />
