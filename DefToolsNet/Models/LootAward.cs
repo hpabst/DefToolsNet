@@ -29,6 +29,11 @@ namespace DefToolsNet.Models
             return;
         }
 
+        private LootAward()
+        {
+            
+        }
+
         public bool Matches(object obj)
         {
             if (obj == null)

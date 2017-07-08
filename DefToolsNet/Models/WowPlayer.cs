@@ -29,6 +29,11 @@ namespace DefToolsNet.Models
             this.PlayerClass = playerClass;
         }
 
+        private WowPlayer()
+        {
+            
+        }
+
         public bool Matches(object obj)
         {
             if (obj == null)

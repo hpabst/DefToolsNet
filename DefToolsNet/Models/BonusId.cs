@@ -28,6 +28,11 @@ namespace DefToolsNet.Models
             this.Effect = "UNKNOWN";
         }
 
+        private BonusId()
+        {
+            
+        }
+
         public bool Matches(object obj)
         {
             if (obj == null)

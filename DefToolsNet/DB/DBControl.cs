@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -8,10 +9,24 @@ using DefToolsNet.DB;
 
 namespace DefToolsNet.Models
 {
-    public static class DbControl
+    public class DbControl
     {
+        public static string DBNAME_DEFAULT = "";
+        public static string DBNAME_TEST = "DefToolsTest";
 
-        public static bool CheckExistsInDb(object o)
+        private string dbname;
+
+        public DbControl(string dbname)
+        {
+            this.dbname = dbname;
+        }
+
+        public DbControl()
+        {
+            this.dbname = DBNAME_DEFAULT;
+        }
+
+        public bool CheckExistsInDb(object o)
         {
             BonusId b = o as BonusId;
             LootAward a = o as LootAward;
@@ -38,10 +53,11 @@ namespace DefToolsNet.Models
             throw new ArgumentException("CheckExistsInDb failed type checks.");
         }
 
-        private static bool CheckExistsInDb(BonusId id)
+        private bool CheckExistsInDb(BonusId id)
         {
             bool result;
-            using (DefToolsContext ctx = new DefToolsContext())
+
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from b in ctx.BonusIds
                     where b.Id == id.Id
@@ -51,10 +67,10 @@ namespace DefToolsNet.Models
             return result;
         }
 
-        private static bool CheckExistsInDb(LootAward award)
+        private bool CheckExistsInDb(LootAward award)
         {
             bool result = false;
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from a in ctx.LootAwards
                     where a.AwardReason == award.AwardReason
@@ -77,10 +93,10 @@ namespace DefToolsNet.Models
             return result;
         }
 
-        private static bool CheckExistsInDb(WowItem item)
+        private bool CheckExistsInDb(WowItem item)
         {
             bool result = false;
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from i in ctx.WowItems
                     where i.ItemId == item.ItemId
@@ -95,10 +111,10 @@ namespace DefToolsNet.Models
             return result;
         }
 
-        private static bool CheckExistsInDb(WowPlayer player)
+        private bool CheckExistsInDb(WowPlayer player)
         {
             bool result;
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from p in ctx.WowPlayers
                     where p.Name == player.Name
@@ -110,7 +126,7 @@ namespace DefToolsNet.Models
             return result;
         }
 
-        public static ICollection<BonusId> Filter(ICollection<BonusId> ids)
+        public ICollection<BonusId> Filter(ICollection<BonusId> ids)
         {
             ICollection<BonusId> retSet = new HashSet<BonusId>();
             foreach (BonusId id in ids)
@@ -123,7 +139,7 @@ namespace DefToolsNet.Models
             return retSet;
         }
 
-        public static ICollection<LootAward> Filter(ICollection<LootAward> awards)
+        public ICollection<LootAward> Filter(ICollection<LootAward> awards)
         {
             ICollection<LootAward> retSet = new HashSet<LootAward>();
             foreach (LootAward award in awards)
@@ -136,7 +152,7 @@ namespace DefToolsNet.Models
             return retSet;
         }
 
-        public static ICollection<WowItem> Filter(ICollection<WowItem> items)
+        public ICollection<WowItem> Filter(ICollection<WowItem> items)
         {
             ICollection<WowItem> retSet = new HashSet<WowItem>();
             foreach (WowItem item in items)
@@ -149,7 +165,7 @@ namespace DefToolsNet.Models
             return retSet;
         }
 
-        public static ICollection<WowPlayer> Filter(ICollection<WowPlayer> players)
+        public ICollection<WowPlayer> Filter(ICollection<WowPlayer> players)
         {
             ICollection<WowPlayer> retSet = new HashSet<WowPlayer>();
             foreach (WowPlayer player in players)
@@ -162,9 +178,9 @@ namespace DefToolsNet.Models
             return retSet;
         }
 
-        public static ICollection<BonusId> FetchAllBonusId()
+        public ICollection<BonusId> FetchAllBonusId()
         {
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from b in ctx.BonusIds
                     select b;
@@ -172,9 +188,9 @@ namespace DefToolsNet.Models
             }
         }
 
-        public static ICollection<LootAward> FetchAllLootAward()
+        public ICollection<LootAward> FetchAllLootAward()
         {
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from b in ctx.LootAwards
                     select b;
@@ -182,9 +198,9 @@ namespace DefToolsNet.Models
             }
         }
 
-        public static ICollection<WowItem> FetchAllItems()
+        public ICollection<WowItem> FetchAllItems()
         {
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from b in ctx.WowItems
                     select b;
@@ -192,14 +208,52 @@ namespace DefToolsNet.Models
             }
         }
 
-        public static ICollection<WowPlayer> FetchAllPlayers()
+        public ICollection<WowPlayer> FetchAllPlayers()
         {
-            using (DefToolsContext ctx = new DefToolsContext())
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
                 var query = from b in ctx.WowPlayers
                     select b;
                 return query.ToList();
             }
+        }
+
+        public bool AddPlayer(WowPlayer player)
+        {
+            if (!CheckExistsInDb(player))
+            {
+                using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+                {
+                    ctx.WowPlayers.Add(player);
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddBonusId(BonusId bid)
+        {
+            if (!CheckExistsInDb(bid))
+            {
+                using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+                {
+                    ctx.BonusIds.Add(bid);
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddItem(WowItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddLootAward(LootAward award)
+        {
+            throw new NotImplementedException();
         }
     }
 }

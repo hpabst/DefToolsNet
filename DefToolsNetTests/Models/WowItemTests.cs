@@ -69,7 +69,7 @@ namespace DefToolsNet.Models.Tests
             Assert.IsTrue(wi2.Matches(wi2));
             Assert.IsFalse(wi1.Matches(wi3));
             Assert.IsFalse(wi2.Matches(wi3));
-            Assert.IsFalse(wi4.Matches(wi1));
+            Assert.IsTrue(wi4.Matches(wi1));
             Assert.IsFalse(wi4.Matches(wi2));
 
             Assert.IsFalse(wi2.Matches(wi5));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ namespace DefToolsNet.DB
     {
 
         public DefToolsContext() : base()
+        {
+
+        }
+
+        public DefToolsContext(string dbname) : base(dbname)
         {
 
         }

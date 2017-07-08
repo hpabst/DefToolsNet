@@ -34,6 +34,11 @@ namespace DefToolsNet.Models
             this.BonusIds = new List<BonusId>();
         }
 
+        private WowItem()
+        {
+            
+        }
+
         public bool Matches(object obj)
         {
             if(obj == null)
@@ -46,7 +51,6 @@ namespace DefToolsNet.Models
                 return false;
             }
             if (i.ItemId != this.ItemId) return false;
-            if (String.Compare(this.Name, i.Name) != 0) return false;
             HashSet<int> itemIds = new HashSet<int>();
             foreach (BonusId id in i.BonusIds)
             {
