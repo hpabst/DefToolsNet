@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -72,15 +73,14 @@ namespace DefToolsNet.Models
             bool result = false;
             using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
-                var query = from a in ctx.LootAwards
-                    where a.AwardReason == award.AwardReason
-                          && a.AwardDate.Date == award.AwardDate.Date
-                          && a.Item.ItemId == award.Item.ItemId
-                          && a.Replacement1.ItemId == award.Replacement1.ItemId
-                          && a.Replacement2.ItemId == award.Replacement2.ItemId
-                          && a.Player.Name == award.Player.Name
-                          && a.Player.Realm == award.Player.Realm
-                    select a;
+                var query = ctx.LootAwards.Where(a => a.AwardReason == award.AwardReason &&
+                                                      a.AwardDate == award.AwardDate &&
+                                                      a.Item.ItemId == award.Item.ItemId &&
+                                                      a.Replacement1.ItemId == award.Replacement1.ItemId &&
+                                                      a.Replacement2.ItemId == award.Replacement2.ItemId &&
+                                                      a.Player.Name == award.Player.Name &&
+                                                      a.Player.Realm == award.Player.Realm).Include(a => a.Player)
+                    .Include(a => a.Item).Include(a => a.Replacement1).Include(a => a.Replacement2);
                 if (query.Any())
                 {
                     foreach (LootAward queried in query)
@@ -289,7 +289,50 @@ namespace DefToolsNet.Models
 
         public bool AddLootAward(LootAward award)
         {
-            throw new NotImplementedException();
+            if (!CheckExistsInDb(award))
+            {
+                using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+                {
+                    if (!CheckExistsInDb(award.Item))
+                    {
+                        AddItem(award.Item);
+                    }
+                    if (!CheckExistsInDb(award.Replacement1))
+                    {
+                        AddItem(award.Replacement1);
+                    }
+                    if (!CheckExistsInDb(award.Replacement2))
+                    {
+                        AddItem(award.Replacement2);
+                    }
+                    if (!CheckExistsInDb(award.Player))
+                    {
+                        AddPlayer(award.Player);
+                    }
+                    WowItem referencedItem = (from i in ctx.WowItems
+                        where i.WowItemId == award.Item.WowItemId
+                        select i).Single();
+                    WowItem referencedr1 = (from i in ctx.WowItems
+                        where i.WowItemId == award.Replacement1.WowItemId
+                        select i).Single();
+                    WowItem referencedr2 = (from i in ctx.WowItems
+                        where i.WowItemId == award.Replacement2.WowItemId
+                        select i).Single();
+                    WowPlayer referencedPlayer = (from p in ctx.WowPlayers
+                                                  where p.Name == award.Player.Name &&
+                                                  p.Realm == award.Player.Realm &&
+                                                  p.PlayerClass == award.Player.PlayerClass
+                                                  select p).Single();
+                    award.Item = referencedItem;
+                    award.Replacement1 = referencedr1;
+                    award.Replacement2 = referencedr2;
+                    award.Player = referencedPlayer;
+                    ctx.LootAwards.Add(award);
+                    ctx.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
