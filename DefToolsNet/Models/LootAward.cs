@@ -46,7 +46,7 @@ namespace DefToolsNet.Models
                 return false;
             }
 
-            return String.Compare(this.AwardReason.ToLower(), i.AwardReason.ToLower()) == 0 &&
+            return String.CompareOrdinal(this.AwardReason.ToLower(), i.AwardReason.ToLower()) == 0 &&
                     this.AwardDate.CompareTo(i.AwardDate) == 0 &&
                     this.Item.Matches(i.Item) &&
                     (this.Replacement1.Matches(i.Replacement1) || this.Replacement1.Matches(i.Replacement2)) &&

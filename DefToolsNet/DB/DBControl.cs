@@ -188,11 +188,10 @@ namespace DefToolsNet.Models
 
         public ICollection<BonusId> FetchAllBonusId()
         {
+            ICollection<BonusId> retCollection;
             using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
-                var query = from b in ctx.BonusIds
-                    select b;
-                return query.ToList();
+                return ctx.BonusIds.ToList();
             }
         }
 
@@ -200,9 +199,8 @@ namespace DefToolsNet.Models
         {
             using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
-                var query = from b in ctx.LootAwards
-                    select b;
-                return query.ToList();
+                return ctx.LootAwards.Include(a => a.Player)
+                    .Include(a => a.Item.BonusIds).Include(a => a.Replacement1.BonusIds).Include(a => a.Replacement2.BonusIds).ToList();
             }
         }
 
@@ -210,9 +208,7 @@ namespace DefToolsNet.Models
         {
             using (DefToolsContext ctx = new DefToolsContext(this.dbname))
             {
-                var query = from b in ctx.WowItems
-                    select b;
-                return query.ToList();
+                return ctx.WowItems.Include(w => w.BonusIds).ToList();
             }
         }
 
