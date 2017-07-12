@@ -13,7 +13,7 @@ namespace DefToolsNet.Models
 {
     public class DbControl
     {
-        public static string DBNAME_DEFAULT = "";
+        public static string DBNAME_DEFAULT = "DefToolsNet";
         public static string DBNAME_TEST = "DefToolsTest";
 
         private string dbname;
@@ -81,7 +81,7 @@ namespace DefToolsNet.Models
                                                       a.Replacement2.ItemId == award.Replacement2.ItemId &&
                                                       a.Player.Name == award.Player.Name &&
                                                       a.Player.Realm == award.Player.Realm).Include(a => a.Player)
-                    .Include(a => a.Item).Include(a => a.Replacement1).Include(a => a.Replacement2);
+                    .Include(a => a.Item.BonusIds).Include(a => a.Replacement1.BonusIds).Include(a => a.Replacement2.BonusIds);
                 if (query.Any())
                 {
                     foreach (LootAward queried in query)
@@ -306,23 +306,44 @@ namespace DefToolsNet.Models
                     {
                         AddPlayer(award.Player);
                     }
-                    WowItem referencedItem = (from i in ctx.WowItems
-                        where i.WowItemId == award.Item.WowItemId
-                        select i).Single();
-                    WowItem referencedr1 = (from i in ctx.WowItems
-                        where i.WowItemId == award.Replacement1.WowItemId
-                        select i).Single();
-                    WowItem referencedr2 = (from i in ctx.WowItems
-                        where i.WowItemId == award.Replacement2.WowItemId
-                        select i).Single();
+                    var referencedItemQuery = (from i in ctx.WowItems
+                        where i.ItemId == award.Item.ItemId
+                        select i).Include(i => i.BonusIds);
+                    var referencedr1Query = (from i in ctx.WowItems
+                        where i.ItemId == award.Replacement1.ItemId
+                        select i).Include(i => i.BonusIds);
+                    var referencedr2Query = (from i in ctx.WowItems
+                        where i.ItemId == award.Replacement2.ItemId
+                        select i).Include(i => i.BonusIds);
+                    foreach (var i in referencedItemQuery)
+                    {
+                        if (i.Matches(award.Item))
+                        {
+                            award.Item = i;
+                            break;
+                        }
+                    }
+                    foreach (var i in referencedr1Query)
+                    {
+                        if (i.Matches(award.Replacement1))
+                        {
+                            award.Replacement1 = i;
+                            break;
+                        }
+                    }
+                    foreach (var i in referencedr2Query)
+                    {
+                        if (i.Matches(award.Replacement2))
+                        {
+                            award.Replacement2 = i;
+                            break;
+                        }
+                    }
                     WowPlayer referencedPlayer = (from p in ctx.WowPlayers
                                                   where p.Name == award.Player.Name &&
                                                   p.Realm == award.Player.Realm &&
                                                   p.PlayerClass == award.Player.PlayerClass
                                                   select p).Single();
-                    award.Item = referencedItem;
-                    award.Replacement1 = referencedr1;
-                    award.Replacement2 = referencedr2;
                     award.Player = referencedPlayer;
                     ctx.LootAwards.Add(award);
                     ctx.SaveChanges();
