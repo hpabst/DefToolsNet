@@ -62,32 +62,307 @@ namespace DefToolsNet.Models.Tests
         [TestMethod()]
         public void CheckExistsInDbTest()
         {
-            throw new NotImplementedException();
+            Random rand = new Random(5);
+            List<BonusId> bids = new List<BonusId>();
+            for (int i = 0; i < 200; i++)
+            {
+                bids.Add(new BonusId(i + 100, RandStr(5, rand)));
+            }
+
+            ctx.BonusIds.AddRange(bids);
+            ctx.SaveChanges();
+
+            foreach (BonusId b in bids)
+            {
+                Assert.IsTrue(ctrl.CheckExistsInDb(b));
+            }
+
+            List<BonusId> absentbids = new List<BonusId>();
+            for (int i = 0; i < 200; i++)
+            {
+                absentbids.Add(new BonusId(i + 500, RandStr(5, rand)));
+            }
+            foreach (BonusId b in absentbids)
+            {
+                Assert.IsFalse(ctrl.CheckExistsInDb(b));
+            }
+            List<WowItem> itemsBidPresent = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 100, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(bids[j]);
+                }
+                itemsBidPresent.Add(item);
+            }
+            ctx.WowItems.AddRange(itemsBidPresent);
+            ctx.SaveChanges();
+            foreach (var i in itemsBidPresent)
+            {
+                Assert.IsTrue(ctrl.CheckExistsInDb(i));
+            }
+            List<WowItem> itemsBidAbsent = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 100, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(absentbids[j]);
+                }
+                itemsBidAbsent.Add(item);
+            }
+            foreach (var i in itemsBidAbsent)
+            {
+                Assert.IsFalse(ctrl.CheckExistsInDb(i));
+            }
+
+            Array classes = Enum.GetValues(typeof(WowClass));
+            List<WowPlayer> players = new List<WowPlayer>();
+            for (int i = 0; i < 100; i++)
+            {
+                players.Add(new WowPlayer(RandStr(10, rand), RandStr(10, rand), (WowClass)classes.GetValue(rand.Next(classes.Length))));
+            }
+            ctx.WowPlayers.AddRange(players);
+            ctx.SaveChanges();
+            foreach (var p in players)
+            {
+                Assert.IsTrue(ctrl.CheckExistsInDb(p));
+            }
+
+            List<LootAward> awards = new List<LootAward>();
+            for (int i = 0; i < 500; i++)
+            {
+                string reason = RandStr(10, rand);
+                DateTime date = RandDate(new DateTime(1995, 01, 01), DateTime.Today, rand);
+                int itemIndex = rand.Next(itemsBidPresent.Count);
+                int r1Index = itemIndex;
+                int r2Index = itemIndex;
+                while (r1Index == itemIndex)
+                {
+                    r1Index = rand.Next(itemsBidPresent.Count);
+                }
+                while (r2Index == itemIndex || r2Index == r1Index)
+                {
+                    r2Index = rand.Next(itemsBidPresent.Count);
+                }
+                WowItem item = itemsBidPresent[itemIndex];
+                WowItem r1 = itemsBidPresent[r1Index];
+                WowItem r2 = itemsBidPresent[r2Index];
+                if (rand.Next() % 2 == 0)
+                {
+                    r2 = WowItem.GetNullItem();
+                }
+                WowPlayer player = players[rand.Next(players.Count)];
+                awards.Add(new LootAward(reason, date, item, r1, r2, player));
+            }
+            foreach (var l in awards)
+            {
+                Assert.IsFalse(ctrl.CheckExistsInDb(l));
+                ctrl.AddLootAward(l);
+            }
+            foreach (var l in awards)
+            {
+                Assert.IsTrue(ctrl.CheckExistsInDb(l));
+            }
+            try
+            {
+                ctrl.CheckExistsInDb("some string");
+                Assert.IsTrue(false);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.IsTrue(true);
+            }
         }
 
         [TestMethod()]
         public void FilterTest()
         {
-            throw new NotImplementedException();
+            Random rand = new Random(5);
+            List<BonusId> bids = new List<BonusId>();
+            for (int i = 0; i < 200; i++)
+            {
+                bids.Add(new BonusId(i + 100, RandStr(5, rand)));
+            }
+
+            ctx.BonusIds.AddRange(bids);
+            ctx.SaveChanges();
+
+            List<BonusId> absentBids = new List<BonusId>();
+            for (int i = 0; i < 50; i++)
+            {
+                absentBids.Add(new BonusId(i + 500, RandStr(5, rand)));
+            }
+            ICollection<BonusId> filteredBids = ctrl.Filter(bids.Concat(absentBids).ToList());
+            Assert.IsTrue(filteredBids.Count == 50);
+            foreach (var i in absentBids)
+            {
+                bool present = false;
+                foreach (var j in filteredBids)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                        break;
+                    }
+                }
+
+                Assert.IsTrue(present);
+            }
+
+            Array classes = Enum.GetValues(typeof(WowClass));
+            List<WowPlayer> players = new List<WowPlayer>();
+            List<WowPlayer> absentPlayers = new List<WowPlayer>();
+            for (int i = 0; i < 100; i++)
+            {
+                players.Add(new WowPlayer(RandStr(10, rand), RandStr(10, rand), (WowClass)classes.GetValue(rand.Next(classes.Length))));
+            }
+            ctx.WowPlayers.AddRange(players);
+            ctx.SaveChanges();
+            for (int i = 0; i < 200; i++)
+            {
+                absentPlayers.Add(new WowPlayer(RandStr(10, rand), RandStr(10, rand), (WowClass)classes.GetValue(rand.Next(classes.Length))));
+            }
+
+            ICollection<WowPlayer> filteredplayers = ctrl.Filter(players.Concat(absentPlayers).ToList());
+            Assert.IsTrue(filteredplayers.Count == 200);
+            foreach (var i in absentPlayers)
+            {
+                bool present = false;
+                foreach (var j in filteredplayers)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                        break;
+                    }
+                }
+
+                Assert.IsTrue(present);
+            }
+
+
+            List<WowItem> items = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 100, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(bids[j]);
+                }
+                items.Add(item);
+            }
+            foreach (var i in items)
+            {
+                Assert.IsTrue(ctrl.AddItem(i));
+            }
+
+            List<WowItem> absentItems = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 500, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(bids[j]);
+                }
+                absentItems.Add(item);
+            }
+            List<WowItem> allItems = items.Concat(absentItems).ToList();
+            ICollection<WowItem> filteredItems = ctrl.Filter(allItems);
+            Assert.IsTrue(filteredItems.Count == 50);
+            foreach (var i in absentItems)
+            {
+                bool present = false;
+                foreach (var j in filteredItems)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                        break;
+                    }
+                }
+                Assert.IsTrue(present);
+            }
+
+            List<LootAward> awards = new List<LootAward>();
+            List<LootAward> absentAwards = new List<LootAward>();
+            for (int i = 0; i < 500; i++)
+            {
+                string reason = RandStr(10, rand);
+                DateTime date = RandDate(new DateTime(1995, 01, 01), DateTime.Today, rand);
+                int itemIndex = rand.Next(allItems.Count);
+                int r1Index = itemIndex;
+                int r2Index = itemIndex;
+                while (r1Index == itemIndex)
+                {
+                    r1Index = rand.Next(allItems.Count);
+                }
+                while (r2Index == itemIndex || r2Index == r1Index)
+                {
+                    r2Index = rand.Next(allItems.Count);
+                }
+                WowItem item = allItems[itemIndex];
+                WowItem r1 = allItems[r1Index];
+                WowItem r2 = allItems[r2Index];
+                if (rand.Next() % 2 == 0)
+                {
+                    r2 = WowItem.GetNullItem();
+                }
+                WowPlayer player = players[rand.Next(players.Count)];
+                awards.Add(new LootAward(reason, date, item, r1, r2, player));
+            }
+
+            foreach (LootAward award in awards)
+            {
+                Assert.IsTrue(ctrl.AddLootAward(award));
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                string reason = RandStr(10, rand);
+                DateTime date = RandDate(new DateTime(1995, 01, 01), DateTime.Today, rand);
+                int itemIndex = rand.Next(allItems.Count);
+                int r1Index = itemIndex;
+                int r2Index = itemIndex;
+                while (r1Index == itemIndex)
+                {
+                    r1Index = rand.Next(allItems.Count);
+                }
+                while (r2Index == itemIndex || r2Index == r1Index)
+                {
+                    r2Index = rand.Next(allItems.Count);
+                }
+                WowItem item = allItems[itemIndex];
+                WowItem r1 = allItems[r1Index];
+                WowItem r2 = allItems[r2Index];
+                if (rand.Next() % 2 == 0)
+                {
+                    r2 = WowItem.GetNullItem();
+                }
+                WowPlayer player = players[rand.Next(players.Count)];
+                absentAwards.Add(new LootAward(reason, date, item, r1, r2, player));
+            }
+
+            ICollection<LootAward> filteredAwards = ctrl.Filter(awards.Concat(absentAwards).ToList());
+            Assert.IsTrue(filteredAwards.Count == 30);
+            foreach (var i in absentAwards)
+            {
+                bool present = false;
+                foreach (var j in filteredAwards)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                        break;
+                    }
+                }
+
+                Assert.IsTrue(present);
+            }
+
         }
 
-        [TestMethod()]
-        public void FilterTest1()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod()]
-        public void FilterTest2()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod()]
-        public void FilterTest3()
-        {
-            throw new NotImplementedException();
-        }
 
         [TestMethod()]
         public void FetchAllBonusIdTest()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -51,7 +52,7 @@ namespace DefToolsNet.Models
             {
                 return CheckExistsInDb(p);
             }
-            throw new ArgumentException("CheckExistsInDb failed type checks.");
+            return false;
         }
 
         private bool CheckExistsInDb(BonusId id)

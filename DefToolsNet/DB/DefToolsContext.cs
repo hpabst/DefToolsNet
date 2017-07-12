@@ -12,11 +12,6 @@ namespace DefToolsNet.DB
     public class DefToolsContext : DbContext
     {
 
-        public DefToolsContext() : base()
-        {
-
-        }
-
         public DefToolsContext(string dbname) : base(dbname)
         {
 

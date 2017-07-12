@@ -18,6 +18,7 @@ namespace DefToolsNet.Models.Tests
         {
             string testStr1 = "item:143575::::::::110:264::5:1:570:::";
             string testStr2 = "item:140816::::::::110:264::6:3:3518:1502:3528:::";
+            string testStr3 = "item:143575:110:264:";
             RcParser rp = new TsvParser();
             WowItem item = rp.UnpackItemString(testStr1);
             Assert.IsTrue(item.ItemId == 143575);
@@ -42,6 +43,15 @@ namespace DefToolsNet.Models.Tests
             Assert.IsTrue(ids.Contains(3518));
             Assert.IsTrue(ids.Contains(1502));
             Assert.IsTrue(ids.Contains(3528));
+            try
+            {
+                rp.UnpackItemString(testStr3);
+                Assert.IsTrue(false);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.IsTrue(true);
+            }
         }
 
         [TestMethod()]
