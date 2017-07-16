@@ -12,6 +12,8 @@ using DefToolsNet.DB;
 using DefToolsNet.Models;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using DefToolsNet.Sheets;
 
 namespace DefToolsNet
 {
@@ -91,6 +93,19 @@ namespace DefToolsNet
                     control,
                     new object[] { propertyValue });
             }
+        }
+
+        private void btnUploadToGoogle_Click(object sender, EventArgs e)
+        {
+            String idRegex = "/spreadsheets/d/([a-zA-Z0-9-_]+)";
+            Match match = Regex.Match(this.textBox1.Text, idRegex);
+            if (!match.Success)
+            {
+                return;
+            }
+            String id = match.Groups[1].Value;
+            GSheets g = new GSheets(id, new DbControl(DbControl.DBNAME_DEFAULT));
+            g.UpdateGoogleSheet();
         }
     }
 }

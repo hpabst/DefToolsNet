@@ -29,6 +29,22 @@ namespace DefToolsNet.Models.Tests
             Assert.IsTrue(wi2.BonusIds.Count == 3);
         }
 
+        [TestMethod()]
+        public void WowheadLinkTest()
+        {
+            WowItem wi1 = new WowItem(1, "Silent Jerkin of the Monkey");
+            List<BonusId> bis = new List<BonusId>();
+            bis.Add(new BonusId(1));
+            bis.Add(new BonusId(3));
+            bis.Add(new BonusId(int.MaxValue));
+            WowItem wi2 = new WowItem(1, "Silent Jerkin of the Monkey", bis);
+            WowItem wi3 = new WowItem(2, "Noisy Jerkin of the Monkey", bis);
+
+            Assert.IsTrue(wi1.WowheadLink == $"www.wowhead.com/item=1&bonus=");
+            Assert.IsTrue(wi2.WowheadLink == $"www.wowhead.com/item=1&bonus=1:3:{int.MaxValue}:");
+            Assert.IsTrue(wi3.WowheadLink == $"www.wowhead.com/item=2&bonus=1:3:{int.MaxValue}:");
+        }
+
 
         [TestMethod()]
         public void MatchesTest()

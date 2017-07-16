@@ -16,6 +16,20 @@ namespace DefToolsNet.Models
         public string Name { get; set; }
         public ICollection<BonusId> BonusIds { get; set; }
 
+        public string WowheadLink
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder("www.wowhead.com");
+                sb.Append($"/item={this.ItemId}&bonus=");
+                foreach (BonusId bid in this.BonusIds)
+                {
+                    sb.Append($"{bid.Id}:");
+                }
+                return sb.ToString();
+            }
+        }
+
         private static WowItem _nullItem;
         private static int _nullId = int.MinValue;
         private static string _nullName = "NULL";
@@ -74,7 +88,6 @@ namespace DefToolsNet.Models
 
             return WowItem._nullItem;
         }
-
 
     }
 }
