@@ -352,5 +352,34 @@ namespace DefToolsNet.Models
             }
             return false;
         }
+
+        public ICollection<LootAward> GetAwardsByPlayer(WowPlayer player)
+        {
+            if (!CheckExistsInDb(player))
+            {
+                return new List<LootAward>();
+            }
+            ICollection<LootAward> awards;
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+            {
+                awards = (from i in ctx.LootAwards
+                        where i.Player.Name == player.Name
+                              && i.Player.Realm == player.Realm
+                              && i.Player.PlayerClass == player.PlayerClass
+                        select i).Include(i => i.Player).Include(i => i.Item.BonusIds).Include(i => i.Replacement1.BonusIds)
+                    .Include(i => i.Replacement2.BonusIds).ToList();
+            }
+            return awards;
+        }
+
+        public int GetAwardCount(WowPlayer player, DateTime start, DateTime end)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetAwardCount(WowPlayer player)
+        {
+            return GetAwardCount(player, DateTime.MinValue, DateTime.MaxValue);
+        }
     }
 }

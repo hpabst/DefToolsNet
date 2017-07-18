@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,7 +77,30 @@ namespace DefToolsNet.Sheets
 
         private bool CreateSummarySheet()
         {
-            throw new NotImplementedException();
+            var players = this.Db.FetchAllPlayers();
+            players = players.OrderBy(x => x.Name).ToList();
+            string valueInputOption = "";
+            List<ValueRange> data = new List<ValueRange>();
+            List<IList<object>> header1 = new List<IList<object>>();
+            List<IList<object>> header2 = new List<IList<object>>();
+            header1.Add(new List<object> { "Player", "Reward", "Reason", "Date", "Replacement 1", "Replacement 2"});
+            header2.Add(new List<object> { "Player", "Recent Gear Count (2 Weeks)", "Overall Gear Count"});
+            data.Add(new ValueRange
+            {
+                Range = "A1:F1",
+                Values = header1
+            });
+            data.Add(new ValueRange
+            {
+                Range = "I1:K1",
+                Values = header2
+            });
+            int dataRow = 2;
+            foreach (WowPlayer player in players)
+            {
+                string playerStr = $"{player.Name}-{player.Realm}";
+            }
+            return false;
         }
 
         private bool CreateAllPlayerSheets()
@@ -84,7 +108,7 @@ namespace DefToolsNet.Sheets
             throw new NotImplementedException();
         }
 
-        private bool CreateUserSheet(WowPlayer player)
+        private bool CreateUserSheetRequest(WowPlayer player)
         {
             throw new NotImplementedException();
         }

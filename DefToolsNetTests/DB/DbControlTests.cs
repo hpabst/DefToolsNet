@@ -671,6 +671,147 @@ namespace DefToolsNet.Models.Tests
         }
 
         [TestMethod()]
+        public void GetAwardsByPlayerTest()
+        {
+            WowPlayer p1 = new WowPlayer("Test1","Realm1", WowClass.DEMONHUNTER);
+            WowPlayer p2 = new WowPlayer("Test2", "Realm1", WowClass.DRUID);
+            WowPlayer p3 = new WowPlayer("Test3", "Realm2", WowClass.DRUID);
+            List<LootAward> p1Awards = new List<LootAward>();
+            List<LootAward> p2Awards = new List<LootAward>();
+            List<LootAward> p3Awards = new List<LootAward>();
+            Random rand = new Random(5);
+            List<BonusId> bids = new List<BonusId>();
+            for (int i = 0; i < 200; i++)
+            {
+                bids.Add(new BonusId(i + 100, RandStr(5, rand)));
+            }
+
+            ctx.BonusIds.AddRange(bids);
+            ctx.SaveChanges();
+
+            List<BonusId> absentbids = new List<BonusId>();
+            for (int i = 0; i < 200; i++)
+            {
+                absentbids.Add(new BonusId(i + 500, RandStr(5, rand)));
+            }
+
+            List<WowItem> itemsBidPresent = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 100, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(bids[j]);
+                }
+                itemsBidPresent.Add(item);
+            }
+
+            List<WowItem> itemsBidAbsent = new List<WowItem>();
+            for (int i = 0; i < 50; i++)
+            {
+                WowItem item = new WowItem(i + 100, RandStr(10, rand));
+                for (int j = i * 4; j < i * 4 + 4; j++)
+                {
+                    item.BonusIds.Add(absentbids[j]);
+                }
+                itemsBidAbsent.Add(item);
+            }
+
+            List<WowItem> allItems = itemsBidAbsent.Concat(itemsBidPresent).ToList();
+            List<LootAward> awards = new List<LootAward>();
+            for (int i = 0; i < 500; i++)
+            {
+                string reason = RandStr(10, rand);
+                DateTime date = RandDate(new DateTime(1995, 01, 01), DateTime.Today, rand);
+                int itemIndex = rand.Next(allItems.Count);
+                int r1Index = itemIndex;
+                int r2Index = itemIndex;
+                while (r1Index == itemIndex)
+                {
+                    r1Index = rand.Next(allItems.Count);
+                }
+                while (r2Index == itemIndex || r2Index == r1Index)
+                {
+                    r2Index = rand.Next(allItems.Count);
+                }
+                WowItem item = allItems[itemIndex];
+                WowItem r1 = allItems[r1Index];
+                WowItem r2 = allItems[r2Index];
+                if (rand.Next() % 2 == 0)
+                {
+                    r2 = WowItem.GetNullItem();
+                }
+                int next = rand.Next();
+                LootAward award;
+                if (next % 3 == 0)
+                {
+                    award = new LootAward(reason, date, item, r1, r2, p1);
+                    p1Awards.Add(award);
+                }
+                else if (next % 3 == 1)
+                {
+                    award = new LootAward(reason, date, item, r1, r2, p2);
+                    p2Awards.Add(award);
+                }
+                else
+                {
+                    award = new LootAward(reason, date, item, r1, r2, p3);
+                    p3Awards.Add(award);
+                }
+                awards.Add(award);
+            }
+            foreach (LootAward award in awards)
+            {
+                Assert.IsTrue(ctrl.AddLootAward(award));
+            }
+
+            var returnedP1 = ctrl.GetAwardsByPlayer(p1);
+            Assert.IsTrue(returnedP1.Count == p1Awards.Count);
+            foreach (var i in p1Awards)
+            {
+                bool present = false;
+                foreach (var j in returnedP1)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                    }
+                }
+                Assert.IsTrue(present);
+            }
+
+            var returnedP2 = ctrl.GetAwardsByPlayer(p2);
+            Assert.IsTrue(returnedP2.Count == p2Awards.Count);
+            foreach (var i in p2Awards)
+            {
+                bool present = false;
+                foreach (var j in returnedP2)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                    }
+                }
+                Assert.IsTrue(present);
+            }
+
+            var returnedP3 = ctrl.GetAwardsByPlayer(p3);
+            Assert.IsTrue(returnedP3.Count == p3Awards.Count);
+            foreach (var i in p3Awards)
+            {
+                bool present = false;
+                foreach (var j in returnedP3)
+                {
+                    if (i.Matches(j))
+                    {
+                        present = true;
+                    }
+                }
+                Assert.IsTrue(present);
+            }
+        }
+
+        [TestMethod()]
         public void AddLootAwardTest()
         {
             Random rand = new Random(5);
