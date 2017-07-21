@@ -374,7 +374,21 @@ namespace DefToolsNet.Models
 
         public int GetAwardCount(WowPlayer player, DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            if (!CheckExistsInDb(player))
+            {
+                return 0;
+            }
+            int count = 0;
+            using (DefToolsContext ctx = new DefToolsContext(this.dbname))
+            {
+                count = (from a in ctx.LootAwards
+                    where a.Player.Name == player.Name
+                          && a.Player.Realm == player.Realm
+                          && a.AwardDate < end &&
+                          a.AwardDate >= start
+                             select a).Count();
+            }
+            return count;
         }
 
         public int GetAwardCount(WowPlayer player)

@@ -109,15 +109,23 @@ namespace DefToolsNet.Models.Tests
         }
 
         private static ICollection<LootAward> RandLootAwards(int count, ICollection<WowPlayer> players,
-            ICollection<WowItem> items, Random randsrc)
+            ICollection<WowItem> items, Random randsrc, DateTime? startDate = null, DateTime? endDate = null)
         {
+            if (startDate == null)
+            {
+                startDate = new DateTime(2015, 01, 01);
+            }
+            if (endDate == null)
+            {
+                endDate = new DateTime(2017, 01, 01);
+            }
             List<WowPlayer> playerList = new List<WowPlayer>(players);
             List<WowItem> itemList = new List<WowItem>(items);
             List<LootAward> awards = new List<LootAward>(count);
             for (int i = 0; i < count; i++)
             {
                 string reason = RandStr(randsrc.Next(5, 20), randsrc);
-                DateTime awardDate = RandDate(new DateTime(2015, 01, 01), new DateTime(2017, 01, 01), randsrc);
+                DateTime awardDate = RandDate((DateTime)startDate, (DateTime)endDate, randsrc);
                 WowItem newItem;
                 WowItem r1;
                 WowItem r2;
@@ -618,6 +626,9 @@ namespace DefToolsNet.Models.Tests
                 }
                 Assert.IsTrue(present);
             }
+
+            WowPlayer p4 = new WowPlayer("Test4", "Realm1", WowClass.MAGE);
+            Assert.IsTrue(ctrl.GetAwardsByPlayer(p4).Count == 0);
         }
 
         [TestMethod()]
@@ -644,6 +655,36 @@ namespace DefToolsNet.Models.Tests
             {
                 Assert.IsFalse(ctrl.AddLootAward(award));
             }
+        }
+
+        [TestMethod()]
+        public void GetAwardCountTest()
+        {
+            Random rand = new Random(5);
+            DateTime start = new DateTime(2000, 01, 01);
+            DateTime end = new DateTime(2010, 01, 01);
+            DateTime midpoint = new DateTime(2005, 01, 01);
+            WowPlayer player = new WowPlayer("Name", "Realm", WowClass.MAGE);
+            List<WowPlayer> playerList = new List<WowPlayer>();
+            playerList.Add(player);
+            ICollection<WowItem> items = RandWowItems(50, rand);
+            ICollection<LootAward> firstawards = RandLootAwards(50, playerList, items, rand, startDate: start, endDate: midpoint);
+            ICollection<LootAward> secondawards = RandLootAwards(50, playerList, items, rand, startDate: midpoint, endDate: end);
+            foreach (LootAward a in firstawards)
+            {
+                Assert.IsTrue(ctrl.AddLootAward(a));
+            }
+            foreach (LootAward a in secondawards)
+            {
+                Assert.IsTrue(ctrl.AddLootAward(a));
+            }
+
+            Assert.IsTrue(ctrl.GetAwardCount(player) == 100);
+            Assert.IsTrue(ctrl.GetAwardCount(player, start, midpoint) == 50);
+            Assert.IsTrue(ctrl.GetAwardCount(player, midpoint, end) == 50);
+
+            WowPlayer missingPlayer = new WowPlayer("Name2", "Realm", WowClass.DEATHKNIGHT);
+            Assert.IsTrue(ctrl.GetAwardCount(missingPlayer) == 0);
         }
     }
 }
